@@ -7,23 +7,30 @@ public class medianFilter{
     
     public static void main(String[] args){
 
-        String filename = "sampleInput1000.txt";
+        String filename = "sampleInput100.txt";
         String line ="";
+        String item="";
+        ArrayList<Float> items = new ArrayList<Float>();
         try{
             File myFile = new File(filename);
             Scanner lines = new Scanner(myFile);
-            ArrayList<Integer> items = new ArrayList<Integer>();
-
+            int length = Integer.parseInt(lines.nextLine());
             while (lines.hasNextLine()){
                 line = lines.nextLine();
-                items.add(Integer.parseInt(line));
+                Scanner itemScanner = new Scanner(line);
+                itemScanner.useDelimiter("\\s* \\s*");
+                itemScanner.next();
+                item=itemScanner.next();
+                item=item.replaceAll(",",".");
+                items.add(Float.parseFloat(item));
             }
 
         } catch(FileNotFoundException e){
             System.out.println("Oopsie diasy we could not find "+filename);
             System.exit(0);
 
-        }   
+        }
+        
         
     }
 
