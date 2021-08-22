@@ -18,7 +18,7 @@ public class medianFilterParallel{
         String filename = args[0];
         String outputName = args[2];
         int filterSize = Integer.parseInt(args[1]);
-        int filtersPerThread = 100; //Integer.parseInt(args[3]);
+        int filtersPerThread = 15000; //Integer.parseInt(args[3]);
         
         String line ="";
         String item="";
@@ -72,7 +72,7 @@ public class medianFilterParallel{
 
         
         ArrayList<Double> filteredItems = new ArrayList<Double>(input);
-        medianThread.applyParallelFilter(filteredItems,filterSize,filtersPerThread,border);
+        medianThread.applyParallelFilter(input,filteredItems,filterSize,filtersPerThread,border);
         result.addAll(filteredItems);
         
 
@@ -124,13 +124,15 @@ public class medianFilterParallel{
 class medianThread extends java.lang.Thread {
 
     ArrayList<Double> localItems  = new ArrayList<Double>();
+    ArrayList<Double> target;
     ArrayList<Double> items;
     int lo;
     int hi;
     int threshhold;
     int border;
 
-     public medianThread(ArrayList<Double> items, int lo, int hi, int threshhold,int border){
+     public medianThread(ArrayList<Double> items,ArrayList<Double> target, int lo, int hi, int threshhold,int border){
+        this.target = target;
         this.items = items;
         this.lo=lo;
         this.hi=hi;
@@ -147,13 +149,13 @@ class medianThread extends java.lang.Thread {
                     localItems.add(items.get(x));         
             }
                 Collections.sort(localItems);
-                items.set(i,localItems.get(border));
+                target.set(i,localItems.get(border));
                 localItems.clear();   
         }
 
         }else{
-            medianThread left = new medianThread(items,lo,hi/2,threshhold,border);
-            medianThread right = new medianThread(items,hi/2,hi,threshhold,border);
+            medianThread left = new medianThread(items,target,lo,hi/2,threshhold,border);
+            medianThread right = new medianThread(items,target,hi/2,hi,threshhold,border);
             left.start();
             right.start();
            
@@ -169,12 +171,12 @@ class medianThread extends java.lang.Thread {
 
     }
 
-    public static void applyParallelFilter(ArrayList<Double> items, int filterSize, int filtersPerThread, int border){
+    public static void applyParallelFilter(ArrayList<Double> items,ArrayList<Double> target, int filterSize, int filtersPerThread, int border){
         int hi = items.size();
         int lo = border;
         int threshhold = filtersPerThread*filterSize;
 
-        medianThread firstThread= new medianThread(items, lo, hi, threshhold, border);
+        medianThread firstThread= new medianThread(items,target, lo, hi, threshhold, border);
         firstThread.run();
 
 
