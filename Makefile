@@ -11,9 +11,9 @@ DOC=doc
 
 $(BINDIR)/%.class:$(SRCDIR)/%.java
 	$(JAVAC) -d $(BINDIR)/ -cp $(BINDIR) $<
-CLASSES= medianFilter.class
+CLASSES= medianFilter.class medianFilterParallel.class
 CLASS_FILES=$(CLASSES:%.class=$(BINDIR)/%.class)
-SOURCES= medianFilter.java 
+SOURCES= medianFilter.java medianFilterParallel.java
 SOURCE_FILES= $(SOURCES:%.java=$(SRCDIR)/%.java)
 
 default: $(CLASS_FILES)
