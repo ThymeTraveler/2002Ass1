@@ -6,6 +6,8 @@ import java.lang.Math;
 import java.util.Collections;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.concurrent.RecursiveAction;
+
 
 
 
@@ -121,7 +123,7 @@ public class medianFilterParallel{
 }
 
 
-class medianThread extends java.lang.Thread {
+class medianThread extends RecursiveAction {
 
     ArrayList<Double> localItems  = new ArrayList<Double>();
     ArrayList<Double> target;
@@ -140,7 +142,7 @@ class medianThread extends java.lang.Thread {
         this.border=border;
     }
 
-    public void run(){
+    public void compute(){
         if(hi-lo<threshhold){
 
             for (int i= lo;i<hi-1;i++){
@@ -156,16 +158,12 @@ class medianThread extends java.lang.Thread {
         }else{
             medianThread left = new medianThread(items,target,lo,hi/2,threshhold,border);
             medianThread right = new medianThread(items,target,hi/2,hi,threshhold,border);
-            left.start();
-            right.start();
+            left.fork();
+            right.fork();
            
-            try {
-                left.join();
-                right.join();
-            } catch (InterruptedException e) {
-                System.out.println("Zoo wee mama");
-                e.printStackTrace();
-            }
+            left.join();
+            right.join();
+            
 
         }
 
@@ -177,7 +175,7 @@ class medianThread extends java.lang.Thread {
         int threshhold = filtersPerThread*filterSize;
 
         medianThread firstThread= new medianThread(items,target, lo, hi, threshhold, border);
-        firstThread.run();
+        firstThread.compute();
 
 
     }
