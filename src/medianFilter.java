@@ -8,13 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class medianFilter{
-    
+    public static double totalTime;
     public static void main(String[] args){
 
         String filename = args[0];
         String outputName = args[2];
         int filterSize = Integer.parseInt(args[1]);
-
+        
         String line ="";
         String item="";
         ArrayList<Double> items = new ArrayList<Double>();
@@ -33,49 +33,64 @@ public class medianFilter{
             }
 
         } catch(FileNotFoundException e){
-            System.out.println("Oopsie diasy we could not find "+filename);
+            System.out.println("Oopsie daisy we could not find "+filename);
             System.exit(0);
-
         }
 
-        ArrayList<Double> filteredList = (applyFilter(items, filterSize));
+
+        double averageTime=0.00;
+        ArrayList<Double> filteredList = new ArrayList<Double>();
+
+        for (int i=0;i<21; i++){
+            filteredList=(applyFilter(items, filterSize));
+            averageTime+=totalTime;
+            System.out.println(i+ " Time taken = "+Double.toString(totalTime) + " milliseconds");
+        } System.out.println("avg Time taken = "+Double.toString(averageTime/20.0) + " milliseconds");
+
         printToFile(filteredList, outputName);
         
     }
 
-    public static ArrayList<Double> applyFilter(ArrayList<Double> input1,int filterSize){
-        ArrayList<Double> input = new ArrayList<Double>(input1);
+
+
+
+    public static ArrayList<Double> applyFilter(ArrayList<Double> input,int filterSize){
+        
         ArrayList<Double> result = new ArrayList<Double>();
         int border= (int) Math.ceil(filterSize/2);
         ArrayList<Double> localItems = new ArrayList<Double>();
         int size = (input.size());
         
+        long startTime = System.nanoTime();
+
         for (int i= 0; i<border;i++){
-            result.add(input.get(i));
-            
-            
+            result.add(input.get(i)); 
         }
         
         for (int i= border; i<size-border;i++){
             for (int x =i-border;x<i+border+1;x++){
-                localItems.add(input.get(x));
-                
-                
+                localItems.add(input.get(x));         
             }
             Collections.sort(localItems);
             result.add(localItems.get(border));
-            localItems.clear();
-            
+            localItems.clear();   
         }
 
         for (int i= size-border; i<size;i++){
             result.add(input.get(i));
         }
         
+         totalTime= (System.nanoTime()-startTime)/1000000.00;
+
+        
 
 
         return result;
     }
+
+
+
+
 
     public static void printToFile(ArrayList<Double> input, String outputName){
 
