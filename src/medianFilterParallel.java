@@ -44,12 +44,13 @@ public class medianFilterParallel{
             System.exit(0);
         }
 
-
+        filtersPerThread = (int) Math.ceil(0.42*items.size()/filterSize);
+        //System.out.println("Filters per thread: " + filtersPerThread);
         double averageTime=0.00;
         ArrayList<Double> filteredList = new ArrayList<Double>();
-
-        for (int i=0;i<21; i++){
-            filteredList=(applyFilter(items, filterSize, filtersPerThread));
+       
+        for (int i=0;i<20; i++){
+            filteredList=(applyFilter(items,filterSize, filtersPerThread));
             averageTime+=totalTime;
             System.out.println(i+ " Time taken = "+Double.toString(totalTime) + " milliseconds");
         } System.out.println("avg Time taken = "+Double.toString(averageTime/20.0) + " milliseconds");
@@ -75,7 +76,7 @@ public class medianFilterParallel{
         
         ArrayList<Double> filteredItems = new ArrayList<Double>(input);
         medianThread.applyParallelFilter(input,filteredItems,filterSize,filtersPerThread,border);
-        result.addAll(filteredItems);
+        //result.addAll(filteredItems);
         
 
       /*  for (int i= size-border; i<size;i++){
@@ -86,8 +87,8 @@ public class medianFilterParallel{
 
         
 
-
-        return result;
+       // System.out.println(filteredItems.subList(0, 10));
+        return filteredItems;
     }
 
 
@@ -125,7 +126,7 @@ public class medianFilterParallel{
 
 class medianThread extends RecursiveAction {
 
-    ArrayList<Double> localItems  = new ArrayList<Double>();
+    ArrayList<Double> localItems;
     ArrayList<Double> target;
     ArrayList<Double> items;
     int lo;
@@ -144,35 +145,41 @@ class medianThread extends RecursiveAction {
 
     public void compute(){
         if(hi-lo<threshhold){
-
-            for (int i= lo;i<hi-1;i++){
+            localItems = new ArrayList<Double>();
+            for (int i= lo;i<hi;i++){
+               // String debug = ("point "+ i +": " );
                 for (int x =i-border;x<i+border+1;x++){
-                    //System.out.println(items.get(x));
+                   // debug+=(items.get(x)+" ");
                     localItems.add(items.get(x));         
             }
+               
                 Collections.sort(localItems);
                 target.set(i,localItems.get(border));
+
+               // System.out.println(debug + " choose " + localItems.get(border));
                 localItems.clear();   
         }
 
         }else{
             medianThread left = new medianThread(items,target,lo,hi/2,threshhold,border);
-            medianThread right = new medianThread(items,target,hi/2,hi,threshhold,border);
+            medianThread right = new medianThread(items,target,hi/2,hi-1,threshhold,border);
             left.fork();
             right.fork();
+            //left.join();
+            //right.join();
            
-            left.join();
-            right.join();
             
+           
+
 
         }
 
     }
 
     public static void applyParallelFilter(ArrayList<Double> items,ArrayList<Double> target, int filterSize, int filtersPerThread, int border){
-        int hi = items.size();
+        int hi = items.size()-border;
         int lo = border;
-        int threshhold = filtersPerThread*filterSize;
+        int threshhold = (filtersPerThread*3)*filterSize;
 
         medianThread firstThread= new medianThread(items,target, lo, hi, threshhold, border);
         firstThread.compute();
