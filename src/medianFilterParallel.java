@@ -43,18 +43,21 @@ public class medianFilterParallel{
             System.out.println("Oopsie daisy we could not find "+filename);
             System.exit(0);
         }
-
-        filtersPerThread = (int) Math.ceil(0.42*items.size()/filterSize);
-        //System.out.println("Filters per thread: " + filtersPerThread);
+        int cores = Runtime.getRuntime().availableProcessors();
+        filtersPerThread = (int) Math.ceil(8*items.size()/(filterSize*cores*1.98));
+        System.out.println("Filters per thread: " + filtersPerThread);
+        System.out.println("Cores: " +cores);
         double averageTime=0.00;
         ArrayList<Double> filteredList = new ArrayList<Double>();
        
         for (int i=0;i<20; i++){
+            System.gc();
             filteredList=(applyFilter(items,filterSize, filtersPerThread));
             averageTime+=totalTime;
             System.out.println(i+ " Time taken = "+Double.toString(totalTime) + " milliseconds");
+            System.gc();
         } System.out.println("avg Time taken = "+Double.toString(averageTime/20.0) + " milliseconds");
-
+        items.clear();
         printToFile(filteredList, outputName);
 
     }
@@ -75,7 +78,7 @@ public class medianFilterParallel{
 
         
         ArrayList<Double> filteredItems = new ArrayList<Double>(input);
-        medianThread.applyParallelFilter(input,filteredItems,filterSize,filtersPerThread,border);
+         medianThread.applyParallelFilter(input,filteredItems,filterSize,filtersPerThread,border);
         //result.addAll(filteredItems);
         
 
@@ -88,7 +91,9 @@ public class medianFilterParallel{
         
 
        // System.out.println(filteredItems.subList(0, 10));
-        return filteredItems;
+      // mypool.shutdown();
+       return filteredItems;
+
     }
 
 
@@ -187,8 +192,14 @@ class medianThread extends RecursiveAction {
 
         medianThread firstThread= new medianThread(items,target, lo, hi, threshhold, border);
         //firstThread.compute();
-        new ForkJoinPool().invoke(firstThread);
+        int cores = Runtime.getRuntime().availableProcessors();
+         ForkJoinPool mypool= new ForkJoinPool(cores);
+         mypool.invoke(firstThread);
 
+         mypool.commonPool().shutdown();
+         
+        
+        
     }
 
     

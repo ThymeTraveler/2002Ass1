@@ -41,7 +41,7 @@ public class medianFilter{
         double averageTime=0.00;
         ArrayList<Double> filteredList = new ArrayList<Double>();
 
-        for (int i=0;i<21; i++){
+        for (int i=0;i<20; i++){
             filteredList=(applyFilter(items, filterSize));
             averageTime+=totalTime;
             System.out.println(i+ " Time taken = "+Double.toString(totalTime) + " milliseconds");
