@@ -1,0 +1,23 @@
+Filters per thread: 2406
+Cores: 8
+0 Time taken = 5.873515 milliseconds
+1 Time taken = 0.995259 milliseconds
+2 Time taken = 0.86297 milliseconds
+3 Time taken = 0.809931 milliseconds
+4 Time taken = 1.673001 milliseconds
+5 Time taken = 19.725761 milliseconds
+6 Time taken = 8.865092 milliseconds
+7 Time taken = 38.056306 milliseconds
+8 Time taken = 14.344781 milliseconds
+9 Time taken = 13.595869 milliseconds
+10 Time taken = 35.308127 milliseconds
+11 Time taken = 65.343893 milliseconds
+12 Time taken = 30.329823 milliseconds
+13 Time taken = 18.156948 milliseconds
+14 Time taken = 0.813371 milliseconds
+15 Time taken = 13.576399 milliseconds
+16 Time taken = 22.948174 milliseconds
+17 Time taken = 9.417535 milliseconds
+18 Time taken = 0.793341 milliseconds
+19 Time taken = 16.365378 milliseconds
+avg Time taken = 15.892773699999998 milliseconds

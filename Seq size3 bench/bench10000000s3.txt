@@ -1,0 +1,23 @@
+Oopsie daisy we could not find sampleInput100000000.txt
+Oopsie daisy we could not find sampleInput100000000.txt
+0 Time taken = 574.376131 milliseconds
+1 Time taken = 665.210445 milliseconds
+2 Time taken = 795.371927 milliseconds
+3 Time taken = 547.355665 milliseconds
+4 Time taken = 577.55518 milliseconds
+5 Time taken = 611.392958 milliseconds
+6 Time taken = 619.748052 milliseconds
+7 Time taken = 531.607114 milliseconds
+8 Time taken = 567.051501 milliseconds
+9 Time taken = 583.134428 milliseconds
+10 Time taken = 589.8706 milliseconds
+11 Time taken = 652.142375 milliseconds
+12 Time taken = 537.361967 milliseconds
+13 Time taken = 607.333624 milliseconds
+14 Time taken = 595.351649 milliseconds
+15 Time taken = 588.448528 milliseconds
+16 Time taken = 601.016056 milliseconds
+17 Time taken = 513.761796 milliseconds
+18 Time taken = 594.492009 milliseconds
+19 Time taken = 640.240059 milliseconds
+avg Time taken = 599.6411032000002 milliseconds
