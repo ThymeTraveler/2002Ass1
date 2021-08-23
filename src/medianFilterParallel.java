@@ -12,9 +12,17 @@ import java.util.concurrent.*;
 
 
 
-
 public class medianFilterParallel{
     public static double totalTime;
+
+     /**
+   * This is the main method which makes use of applyFilter 
+   * and printToFile methods.
+   * @param args input from the terminal (eg. <input_file>  <filter_size> <output_file>)
+   * @return Nothing (prints to terminal).
+   * @exception FileNotFoundException On file error.
+   * @see FileNotFoundException
+   */
     public static void main(String[] args){
 
         String filename = args[0];
@@ -63,6 +71,14 @@ public class medianFilterParallel{
     }
 
 
+    /**
+   * This applies a median filter using the applyParrallelFilter function found in the medianThread class below
+   * @param input the input arraylist that you want to apply the median filter on
+   * @param filterSize the filter size
+   * @param filtersPerThread the number of filters per thread 
+   * @return resultant ArrayList of Double with filter applied to it
+   */
+
 
     public static ArrayList<Double> applyFilter(ArrayList<Double> input,int filterSize, int filtersPerThread){
         ArrayList<Double> result = new ArrayList<Double>();
@@ -72,33 +88,23 @@ public class medianFilterParallel{
         
         long startTime = System.nanoTime();
 
-      /*  for (int i= 0; i<border;i++){
-            result.add(input.get(i)); 
-        }*/
-
         
         ArrayList<Double> filteredItems = new ArrayList<Double>(input);
          medianThread.applyParallelFilter(input,filteredItems,filterSize,filtersPerThread,border);
-        //result.addAll(filteredItems);
-        
-
-      /*  for (int i= size-border; i<size;i++){
-            result.add(input.get(i));
-        }*/
+       
         
          totalTime= (System.nanoTime()-startTime)/1000000.00;
 
-        
-
-       // System.out.println(filteredItems.subList(0, 10));
-      // mypool.shutdown();
        return filteredItems;
 
     }
 
-
-
-
+   /**
+   * This prints an arraylist of double to an output text file
+   * @param input the input arraylist that you want to print
+   * @param outputName the name of the text file that will be produced or overwritten
+   * @return nothing to System.out or any return types
+   */
 
     public static void printToFile(ArrayList<Double> input, String outputName){
 
@@ -128,7 +134,6 @@ public class medianFilterParallel{
 
 }
 
-
 class medianThread extends RecursiveAction {
 
     ArrayList<Double> localItems;
@@ -138,6 +143,17 @@ class medianThread extends RecursiveAction {
     int hi;
     int threshhold;
     int border;
+   
+    /**
+   * implementation of the forkjoin framework's constructor.
+   * @param items the input arraylist 
+   * @param target the arraylist that will hold the results (using pass by reference)
+   * @param lo starting index
+   * @param hi ending index
+   * @param threshhold the sequential cutoff
+   * @param border border 
+   * @return nothing to System.out or any return types
+   */
 
      public medianThread(ArrayList<Double> items,ArrayList<Double> target, int lo, int hi, int threshhold,int border){
         this.target = target;
@@ -148,6 +164,11 @@ class medianThread extends RecursiveAction {
         this.border=border;
     }
 
+     /**
+   * implementation of the forkjoin framework's compute method.
+   * @param 
+   * @return nothing to System.out or any return types
+   */
     protected void compute(){
         if(hi-lo<threshhold){
             //System.out.println(hi + " " +lo);
@@ -170,10 +191,8 @@ class medianThread extends RecursiveAction {
             medianThread left = new medianThread(items,target,lo,lo+(hi-lo)/2,threshhold,border);
             medianThread right = new medianThread(items,target,lo+(hi-lo)/2,hi+1,threshhold,border);
             left.fork();
-            //System.out.println(hi);
-            //System.out.println(hi/2);
-            //left.join();
             right.fork();
+            
             //left.join();
             //right.join();
            
@@ -184,6 +203,15 @@ class medianThread extends RecursiveAction {
         }
 
     }
+ /**
+   * This function actually executes and applies the median filter using the ForkJoin Framework
+   * @param items the input arraylist that you want to base the filter on
+   * @param target the target arraylist that you want the results to be stored on (using pass by reference)
+   * @param filterSize the filter size
+   * @param filtersPerThread the number of filters per thread (used to calculated the threshhold/sequential cuttoff)
+   * @param border the size of the border created by the filter size (border = 1 for filter size of 3)
+   * @return nothing to System.out or any return types
+   */
 
     public static void applyParallelFilter(ArrayList<Double> items,ArrayList<Double> target, int filterSize, int filtersPerThread, int border){
         int hi = items.size()-border;

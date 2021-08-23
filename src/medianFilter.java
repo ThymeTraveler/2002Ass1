@@ -9,6 +9,15 @@ import java.io.IOException;
 
 public class medianFilter{
     public static double totalTime;
+
+      /**
+   * This is the main method which makes use of applyMedianFilter 
+   * and printToFile methods.
+   * @param args input from the terminal (eg. <input_file>  <filter_size> <output_file>)
+   * @return Nothing (prints to terminal).
+   * @exception FileNotFoundException On file error.
+   * @see FileNotFoundException
+   */
     public static void main(String[] args){
 
         String filename = args[0];
@@ -51,8 +60,12 @@ public class medianFilter{
         
     }
 
-
-
+       /**
+   * This applies a median filter sequentially
+   * @param input the input arraylist that you want to apply the median filter on
+   * @param filterSize the filter size
+   * @return resultant ArrayList of Double with filter applied to it
+   */
 
     public static ArrayList<Double> applyFilter(ArrayList<Double> input,int filterSize){
         
@@ -91,7 +104,12 @@ public class medianFilter{
 
 
 
-
+   /**
+   * This prints an arraylist of double to an output text file
+   * @param input the input arraylist that you want to print
+   * @param outputName the name of the text file that will be produced or overwritten
+   * @return nothing to System.out or any return types
+   */
     public static void printToFile(ArrayList<Double> input, String outputName){
 
        try{
