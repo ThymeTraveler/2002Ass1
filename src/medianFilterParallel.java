@@ -1,4 +1,4 @@
-import java.util.Scanner;
+import java.util.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -6,7 +6,7 @@ import java.lang.Math;
 import java.util.Collections;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.concurrent.RecursiveAction;
+import java.util.concurrent.*;
 
 
 
@@ -143,27 +143,31 @@ class medianThread extends RecursiveAction {
         this.border=border;
     }
 
-    public void compute(){
+    protected void compute(){
         if(hi-lo<threshhold){
+            //System.out.println(hi + " " +lo);
             localItems = new ArrayList<Double>();
             for (int i= lo;i<hi;i++){
-               // String debug = ("point "+ i +": " );
+              // String debug = ("point "+ i +": " );
                 for (int x =i-border;x<i+border+1;x++){
-                   // debug+=(items.get(x)+" ");
+                    // debug+=(items.get(x)+" ");
                     localItems.add(items.get(x));         
             }
                
                 Collections.sort(localItems);
                 target.set(i,localItems.get(border));
 
-               // System.out.println(debug + " choose " + localItems.get(border));
+            // System.out.println(debug + " choose " + localItems.get(border));
                 localItems.clear();   
         }
 
         }else{
-            medianThread left = new medianThread(items,target,lo,hi/2,threshhold,border);
-            medianThread right = new medianThread(items,target,hi/2,hi-1,threshhold,border);
+            medianThread left = new medianThread(items,target,lo,lo+(hi-lo)/2,threshhold,border);
+            medianThread right = new medianThread(items,target,lo+(hi-lo)/2,hi+1,threshhold,border);
             left.fork();
+            //System.out.println(hi);
+            //System.out.println(hi/2);
+            //left.join();
             right.fork();
             //left.join();
             //right.join();
@@ -179,11 +183,11 @@ class medianThread extends RecursiveAction {
     public static void applyParallelFilter(ArrayList<Double> items,ArrayList<Double> target, int filterSize, int filtersPerThread, int border){
         int hi = items.size()-border;
         int lo = border;
-        int threshhold = (filtersPerThread*3)*filterSize;
+        int threshhold = (filtersPerThread)*filterSize;
 
         medianThread firstThread= new medianThread(items,target, lo, hi, threshhold, border);
-        firstThread.compute();
-
+        //firstThread.compute();
+        new ForkJoinPool().invoke(firstThread);
 
     }
 
